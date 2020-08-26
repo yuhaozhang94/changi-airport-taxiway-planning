@@ -81,46 +81,15 @@ Let the decision variable R(a, k) denote the node at which aircraft a is begins 
 Objective function
 The objective function aims to minimize the total taxing time and distance traveled by the aircraft from gates to runway (vice versa)
 
-w1 * (∑_(a=1)^(N_a)▒(t_D (a)-t_start (a))         						
----- taxi time 
-+ w2 * (∑_(a=1)^(N_a)▒∑_(k=2)^((N_k-1))▒∑_(n=1)^(N_n)▒∑_(m=1)^(N_n)▒〖L(n,m)X(a,n,m,k)+r_ST (m,a)X(a,n,m,(N_k-1))〗    	
----- distance travelled
-
-where w1 and w2 are weights provided to determine which is more important. In the case of our model, we prioritize taxi time over distance traveled, yielding w1 = 5 > w2 = 3.
-
 
 Constraints
-Initialization
-∀a∈A,n∈N: 
- 	X(a,n,m,k)≤C(n,m) ∀m∈N,k∈{2,…,N_k-1}
-
-Continuity
-∀a∈A,n∈N:
- 	∑_(m=1)^(N_n)▒X(a,n,m,k) =∑_(m=1)^(N_n)▒〖X(a,m,n,k-1) ∀k∈{2,…,N_k-1} 〗
-
-Must have a plan if active
-∀a∈A,n∈N:
- 		∑_(n=1)^(N_n)▒∑_(m=1)^(N_n)▒X(a,n,m,k) =1 ∀k∈{1,…,N_k-1}
-
-Consistent destination plans
-∀a∈A,j∈{2,…,N_k-1}:
- 		 T(a,N_k )≤T(a,j)+M(1 - ∑_(m=1)^(N_n)▒X(a,m,n_D (a),(j-1)) )
-
-No turnarounds
- ∀a∈A,n∈{1,…,N_n-1},m∈{(n+1),…,N_n }:
- 		 ∑_(k=1)^((N_k-1))▒X(a,n,m,k) +∑_(j=1)^((N_k-1))▒X(a,m,n,j) ≤1
-
-
-No speeding
-∀a∈A,k∈{2,…,N_k-1}:
- 		T(a,k)+  (∑_(n=1)^(N_n)▒∑_(m=1)^(N_n)▒L(n,m)X(a,n,m,k) )/V(a) ≤T(a,k+1)
-
-Avoid wake vortex / Standard Instrument Departure
-∀{a,b,n}∈〖SE〗_i, k∈{1,…,N_k-1},j∈{1,…,N_k-1}:
- D_SE ({a,b,n},k,j)=1⟹
- 		T(a,(j+1))≥T(b,(k+1))+ d_t (b,a,n)-Mg_SE ({a,b,n})
- 		T(b,(k+1))≥T(a,(j+1))+ d_t (a,b,n)-M(1-g_SE ({a,b,n}))
-
+- Initialization
+- Continuity
+- Must have a plan if active
+- Consistent destination plans
+- No turnarounds
+- No speeding
+- Avoid wake vortex / Standard Instrument Departure
 
 ## Results
 The results show that breaking down the global scheduling problem into various horizons allows us to accommodate changes in scheduling instantly. Minimizing the value of the execution horizon allows us to capture dynamic changes more quickly. Thus, this results to a more real-time planning for the entire planning horizon and by breaking down the schedule into smaller horizons, it helps us achieve an approximation to the global optimal solution.
